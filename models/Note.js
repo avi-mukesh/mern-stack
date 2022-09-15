@@ -8,7 +8,7 @@ const noteSchema = new mongoose.Schema(
             ref: "User",
             required: true,
         },
-        tile: {
+        title: {
             type: String,
             required: true,
         },
