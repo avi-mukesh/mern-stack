@@ -8,9 +8,9 @@ const asyncHandler = require("express-async-handler")
 // @access Public
 
 const login = asyncHandler(async (req, res) => {
-    const { username, passsword } = req.body
+    const { username, password } = req.body
 
-    if (!username || !passsword) {
+    if (!username || !password) {
         return res.status(400).json({ message: "All fields are required" })
     }
 
@@ -30,7 +30,7 @@ const login = asyncHandler(async (req, res) => {
             },
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "10s" }
+        { expiresIn: "1m" }
     )
 
     const refreshToken = jwt.sign(
@@ -78,7 +78,7 @@ const refresh = (req, res) => {
                     },
                 },
                 process.env.ACCESS_TOKEN_SECRET,
-                { expiresIn: "10s" }
+                { expiresIn: "1m" }
             )
             res.json({ accessToken })
         })
@@ -98,7 +98,7 @@ const logout = (req, res) => {
         secure: true,
     })
 
-    res.json({message:"Cookie cleared"})
+    res.json({ message: "Cookie cleared" })
 }
 
 module.exports = { login, refresh, logout }
