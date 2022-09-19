@@ -30,7 +30,7 @@ const login = asyncHandler(async (req, res) => {
             },
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "1m" }
+        { expiresIn: "15m" }
     )
 
     const refreshToken = jwt.sign(
@@ -38,7 +38,7 @@ const login = asyncHandler(async (req, res) => {
             username: foundUser.username,
         },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: "1d" }
+        { expiresIn: "7d" }
     )
 
     res.cookie("jwt", refreshToken, {
@@ -55,6 +55,7 @@ const login = asyncHandler(async (req, res) => {
 // @route GET /auth/refresh
 // @access Public - because access token has expired
 const refresh = (req, res) => {
+    console.log("refresh being called")
     const cookies = req.cookies
     if (!cookies?.jwt) return res.status(401).json({ message: "Unauthorised" })
 
@@ -67,7 +68,9 @@ const refresh = (req, res) => {
             if (err) return res.status(403).json({ message: "Forbidden" })
 
             // remmeber how we created our refreshToken - we encoded the object {username}
-            const foundUser = await User.find({ username: decoded.username })
+            const foundUser = await User.find({
+                username: decoded.username,
+            }).exec()
             if (!foundUser)
                 return res.status(401).json({ message: "Unauthorised" })
             const accessToken = jwt.sign(
@@ -78,7 +81,7 @@ const refresh = (req, res) => {
                     },
                 },
                 process.env.ACCESS_TOKEN_SECRET,
-                { expiresIn: "1m" }
+                { expiresIn: "15m" }
             )
             res.json({ accessToken })
         })

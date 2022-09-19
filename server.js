@@ -1,4 +1,5 @@
 require("dotenv").config()
+// require("express-async-errors") //this is an alternate way to handle async routes - literally just need to require, nothing else
 
 const express = require("express")
 const app = express()
